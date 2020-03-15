@@ -1,6 +1,8 @@
 jupyterlab==1.2.6
 spacy
 folium
+loguru
+nltk
 ipywidgets
 jupyterlab_latex
 plotly
