@@ -91,7 +91,7 @@ RUN python3 -m pip install /app --no-deps
 # and add jupyterlab extensions
 RUN export NODE_OPTIONS=--max-old-space-size=4096
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.1 --no-build
-RUN jupyter labextension install @jupyterlab/toc
+RUN jupyter labextension install @jupyterlab/toc --no-build
 RUN jupyter labextension install jupyterlab-plotly@1.5.4 --no-build
 RUN jupyter labextension install plotlywidget@1.5.4 --no-build
 RUN jupyter lab build
