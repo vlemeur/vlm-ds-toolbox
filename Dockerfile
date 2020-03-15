@@ -11,21 +11,27 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 
 # Install local ds_toolbox code
 USER root
-COPY . /app
+COPY /bin  /app
+COPY /config /app
+COPY README.md /app
+COPY  requirements.txt /app
+COPY setup.py /app
+COPY ds_toolbox /app
 WORKDIR /app
 RUN python3 -m pip install /app --no-deps
 
+# Install all python packages from requirements and install and enable jupyterlab extensions
 RUN pip install --upgrade pip && \
   pip install --upgrade -r requirements.txt && \
   jupyter labextension install \
     @jupyter-widgets/jupyterlab-manager \
     @jupyterlab/latex \
+    @jupyterlab/toc \
     @jupyterlab/plotly-extension \
-    jupyterlab-spreadsheet \
-    @jupyterlab/git
+    jupyterlab-spreadsheet
 
 
-
+# Scripts to launch jupyterlab
 COPY bin/entrypoint.sh /usr/local/bin/
 COPY config/ /root/.jupyter/
 
