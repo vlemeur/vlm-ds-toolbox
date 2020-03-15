@@ -2,11 +2,10 @@ start:
 	@make clean
 	@docker build -t vlm_ds_toolbox -f Dockerfile .
 	@docker run -p 8888:8888 \
-	  -v $(PWD)/notebooks:/home/jovyan/work \
+	  -v $(PWD)/notebooks:/notebooks \
 	  --name vlm-ds-notebook \
-	  -e JUPYTER_ENABLE_LAB=yes \
 	  -d vlm_ds_toolbox
-
+	@docker logs -f vlm-ds-notebook
 
 
 clean:

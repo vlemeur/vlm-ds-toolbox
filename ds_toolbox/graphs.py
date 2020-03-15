@@ -121,11 +121,12 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     ]
     if additional_traces is not None:
         traces += additional_traces
-    return plot(
+    plot(
         traces=traces,
         show=show,
         **kwargs
     )
+    return df
 
 
 def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
@@ -226,7 +227,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     )
     if show is True:
         fig.show()
-    return fig
+    return df
 
 
 def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%H:%M:%SZ', webgl=False, **kwargs):
@@ -314,12 +315,9 @@ def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%
             kwargs['y_axis_name'] = ''
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = x_name
+    plot(traces=traces, show=show, **kwargs)
 
-    return plot(
-        traces=traces,
-        show=show,
-        **kwargs
-    )
+    return df
 
 
 def plot_bar(keys, x, df, show=True, **kwargs):
@@ -370,7 +368,8 @@ def plot_bar(keys, x, df, show=True, **kwargs):
         for ind, key in enumerate(keys)
 
     ]
-    return plot(traces=traces, show=show, **kwargs)
+    plot(traces=traces, show=show, **kwargs)
+    return df
 
 
 def plot_failure_polar(key, df, angle_filter, show=True, **kwargs):
@@ -444,7 +443,7 @@ def plot_failure_polar(key, df, angle_filter, show=True, **kwargs):
     )
     if show:
         fig.show()
-    return fig
+    return df
 
 
 def plot_pie_chart(keys, values, show=True, **kwargs):
@@ -478,4 +477,5 @@ def plot_pie_chart(keys, values, show=True, **kwargs):
             marker=dict(colors=colors if colors is not None else None)
         )
     ]
-    return plot(traces=traces, show=show, **kwargs)
+    plot(traces=traces, show=show, **kwargs)
+    return values
