@@ -20,9 +20,9 @@ RUN pip install --upgrade pip && \
   jupyter labextension install \
     @jupyter-widgets/jupyterlab-manager \
     @jupyterlab/latex \
+    @jupyterlab/toc \
     @jupyterlab/plotly-extension \
-    jupyterlab-spreadsheet \
-    @jupyterlab/git
+    jupyterlab-spreadsheet
 
 
 
