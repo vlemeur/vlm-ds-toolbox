@@ -10,10 +10,18 @@ The goal of this repository is to have easy access to many usefull Data Science 
 
   
 ## Available Commands and Usage
+> make build
+
+Build the entire image
+
 > make start
 
 Start jupyterlab session with usefull packages and extensions installed.
 
+> make build_and_start
+
+Build docker image and start jupyterlab session
+ 
 
 ### clean
 >make clean
