@@ -13,7 +13,7 @@ The goal of this repository is to have easy access to many usefull Data Science 
 #### start-full-stack
 > make start
 
-Start jupyterlab session. For now docker logs -f vlm_ds_notebooks is necessary
+Start jupyterlab session with usefull packages and extensions installed.
 
 
 ### clean
