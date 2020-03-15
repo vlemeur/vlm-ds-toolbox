@@ -8,5 +8,6 @@ start:
 	  -e JUPYTER_ENABLE_LAB=yes
 	@docker logs -f vlm-ds-notebook
 
+
 clean:
 	@docker stop vlm-ds-notebook || true && docker rm vlm-ds-notebook || true
