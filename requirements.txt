@@ -9,3 +9,4 @@ nbformat==4.4.0
 jupyter_contrib_nbextensions>=0.5.1
 notebook==6.0.3
 jupyterlab==1.2.5
+widgetsnbextension>=3.5
