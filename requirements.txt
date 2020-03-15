@@ -1,4 +1,6 @@
 jupyterlab==1.2.6
+spacy
+folium
 ipywidgets
 jupyterlab_latex
 plotly
