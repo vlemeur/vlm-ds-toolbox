@@ -20,10 +20,13 @@ RUN pip install --upgrade pip && \
   jupyter labextension install \
     @jupyter-widgets/jupyterlab-manager \
     @jupyterlab/latex \
+    @ijmbarr/jupyterlab_spellchecker \
     @jupyterlab/toc \
     @jupyterlab/plotly-extension \
+    @jupyterlab/geojson-extension \
+    @lckr/jupyterlab_variableinspector \
     jupyterlab-spreadsheet \
-    jupyterlab-drawio \
+    jupyterlab-drawio
 
 
 COPY bin/entrypoint.sh /usr/local/bin/
