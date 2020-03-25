@@ -3,6 +3,7 @@ spacy
 folium
 loguru
 nltk
+ipyleaflet
 ipywidgets
 jupyterlab_latex
 plotly
