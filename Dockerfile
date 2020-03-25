@@ -22,8 +22,8 @@ RUN pip install --upgrade pip && \
     @jupyterlab/latex \
     @jupyterlab/toc \
     @jupyterlab/plotly-extension \
-    jupyterlab-spreadsheet
-
+    jupyterlab-spreadsheet \
+    jupyterlab-drawio \
 
 
 COPY bin/entrypoint.sh /usr/local/bin/
