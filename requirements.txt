@@ -3,6 +3,7 @@ spacy
 folium
 loguru
 nltk
+jupyterlab_geojson
 ipywidgets
 jupyterlab_latex
 plotly
