@@ -24,7 +24,6 @@ RUN pip install --upgrade pip && \
     @jupyterlab/plotly-extension \
     jupyterlab-spreadsheet \
     jupyterlab-drawio \
-    jupyter-leaflet
 
 
 COPY bin/entrypoint.sh /usr/local/bin/
