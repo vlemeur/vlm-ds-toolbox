@@ -26,7 +26,7 @@ def get_requirements_from_files():
 setup(
     name='ds_toolbox',
     packages=find_packages(),
-    version='0.1.0',
+    version='0.2.0',
     description='Tools to perform Data Science study',
     long_description=readme(),
     license='TOBEDEFINED',
