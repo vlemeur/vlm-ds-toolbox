@@ -4,6 +4,7 @@ folium
 pyarrow
 confluent-kafka
 plotly
+plotly-geo
 kaleido
 geopandas
 keras

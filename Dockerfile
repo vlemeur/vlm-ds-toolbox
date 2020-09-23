@@ -39,6 +39,7 @@ RUN jupyter labextension install \
     @jupyter-voila/jupyterlab-preview \
     jupyterlab-spreadsheet \
     jupyterlab-plotly \
+    plotlywidget \
     jupyterlab-drawio \
     jupyter-matplotlib \
     jupyterlab-datawidgets \
