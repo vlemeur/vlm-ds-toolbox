@@ -34,6 +34,7 @@ def plot(traces, show=True, **kwargs):
     x_axis_name = kwargs.pop('x_axis_name', None)
     y_axis_name = kwargs.pop('y_axis_name', None)
     template = kwargs.pop('template', 'plotly_dark')
+    widget = kwargs.pop('widget', False)
 
     fig = go.Figure()
     for trace in traces:
@@ -55,9 +56,12 @@ def plot(traces, show=True, **kwargs):
         template=template
     )
 
-    if show is True:
-        fig.show()
-    return fig
+    if widget:
+        return go.FigureWidget(fig)
+    else:
+        if show is True:
+            fig.show()
+        return fig
 
 
 def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **kwargs):
@@ -102,6 +106,7 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     modes = kwargs.pop('modes', None)
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
+    widget = kwargs.pop('widget', False)
 
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = 'Time'
@@ -121,12 +126,16 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     ]
     if additional_traces is not None:
         traces += additional_traces
-    plot(
+    fig = plot(
         traces=traces,
         show=show,
+        widget=widget,
         **kwargs
     )
-    return df
+    if widget:
+        return fig
+    else:
+        return df
 
 
 def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
@@ -172,6 +181,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
     nbinsx = kwargs.pop('nbinsx', None)
+    widget = kwargs.pop('widget', False)
 
     quantiles = quantiles if quantiles is not None else []
 
@@ -193,6 +203,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     fig = plot(
         traces=traces,
         show=False,
+        widget=widget,
         **kwargs
     )
 
@@ -225,9 +236,12 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
             if not df[keys[0]].isna().all()
         ]
     )
-    if show is True:
-        fig.show()
-    return df
+    if widget:
+        return go.FigureWidget(fig)
+    else:
+        if show is True:
+            fig.show()
+        return df
 
 
 def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%H:%M:%SZ', webgl=False, **kwargs):
@@ -283,6 +297,7 @@ def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%
     colors = kwargs.pop('colors', None)
     modes = kwargs.pop('modes', None)
     names = kwargs.pop('names', None)
+    widget = kwargs.pop('widget', False)
 
     marker = dict(color=df[z_name],
                   colorscale='Jet',
@@ -315,9 +330,16 @@ def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%
             kwargs['y_axis_name'] = ''
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = x_name
-    plot(traces=traces, show=show, **kwargs)
-
-    return df
+    fig = plot(
+        traces=traces,
+        show=show,
+        widget=widget,
+        **kwargs
+    )
+    if widget:
+        return fig
+    else:
+        return df
 
 
 def plot_bar(keys, x, df, show=True, **kwargs):
@@ -357,6 +379,7 @@ def plot_bar(keys, x, df, show=True, **kwargs):
     """
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
+    widget = kwargs.pop('widget', False)
 
     traces = [
         go.Bar(
@@ -368,82 +391,16 @@ def plot_bar(keys, x, df, show=True, **kwargs):
         for ind, key in enumerate(keys)
 
     ]
-    plot(traces=traces, show=show, **kwargs)
-    return df
-
-
-def plot_failure_polar(key, df, angle_filter, show=True, **kwargs):
-    """
-    Plots a polar bar of failures impact angles (in degrees) relative to input failure key impact.
-    Failures with impact angle in [90 - angle_limit, 90 + angle_limit] are filtered.
-
-    :param key: Name of reference failure to use
-    :type kwargs: str
-
-    :param df: pandas DataFrame containing angle_with_<input_failure_key> column containing failures impact angles with
-    input key
-    :type df: pandas DataFrame
-
-    :param angle_filter: float representing filter limit. Failures with impact angle in
-     [90 - angle_filter, 90 + angle_filter] are filtered
-    :type angle_filter: float
-
-    :param show: Boolean controlling whether or not to plot the curves
-    :type show: bool, optional
-
-    :param kwargs: optional arguments used in plot functions.
-    Possible kwargs are :
-        - title tile of the graph
-        - template string indicating plotly graph template to use. Possible choices are :
-            "plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none".
-            See https://plot.ly/python/templates for more informations
-
-    :return: plotly figure object
-    """
-    # values zones
-    compass_traces = [
-        go.Barpolar(
-            r=[1, 1, 1, 1, 1],
-            theta=[10, 32.5, 90, 147.5, 170],
-            width=[20, 25, 90, 25, 20],
-            showlegend=False,
-            opacity=0.6,
-            hoverinfo='skip',
-            marker_color=['firebrick', 'coral', 'lightgreen', 'coral', 'firebrick']
-        )
-    ]
-
-    for failure in df.index:
-        if not (
-                (90 - angle_filter <= df.loc[failure, 'angle_with_' + key] <= 90 + angle_filter) or (
-                3. * 90 - angle_filter <= df.loc[failure, 'angle_with_' + key] <= 3. * 90 + angle_filter)
-        ):
-            compass_traces.append(
-                go.Scatterpolar(
-                    r=[0, 1],
-                    theta=[0, df.loc[failure, 'angle_with_' + key]],
-                    name=failure,
-                    marker=dict(symbol='y-up')))
-
-
     fig = plot(
-        traces=compass_traces,
-        show=False,
+        traces=traces,
+        show=show,
+        widget=widget,
         **kwargs
     )
-
-    fig.update_layout(
-        polar=dict(
-            radialaxis={
-                'visible': True,
-                'range': [0, 1]
-            },
-            sector=[-1, 181]
-        )
-    )
-    if show:
-        fig.show()
-    return df
+    if widget:
+        return fig
+    else:
+        return df
 
 
 def plot_pie_chart(keys, values, show=True, **kwargs):
@@ -470,6 +427,7 @@ def plot_pie_chart(keys, values, show=True, **kwargs):
     :return: plotly figure object
     """
     colors = kwargs.pop('colors', None)
+    widget = kwargs.pop('widget', False)
     traces = [
         go.Pie(
             labels=keys,
@@ -477,5 +435,13 @@ def plot_pie_chart(keys, values, show=True, **kwargs):
             marker=dict(colors=colors if colors is not None else None)
         )
     ]
-    plot(traces=traces, show=show, **kwargs)
-    return values
+    fig = plot(
+        traces=traces,
+        show=show,
+        widget=widget,
+        **kwargs
+    )
+    if widget:
+        return fig
+    else:
+        return values
