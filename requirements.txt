@@ -18,5 +18,13 @@ numexpr
 patsy
 voila
 pymongo
+onnxmltools
+sktime
+gensim
+skorch
+hmmlearn
+sklearn-porter
+sklearn-deap
 responses
 nbresuse
+tslearn
