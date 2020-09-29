@@ -22,6 +22,7 @@ pymongo
 onnxmltools
 sktime
 gensim
+shap
 skorch
 hmmlearn
 sklearn-porter
@@ -29,4 +30,6 @@ sklearn-deap
 responses
 nbresuse
 tslearn
+interpret
 windrose
+xarray
