@@ -107,6 +107,7 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
     widget = kwargs.pop('widget', False)
+    bandwith = kwargs.pop('bandwith', None)
 
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = 'Time'
@@ -126,6 +127,14 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     ]
     if additional_traces is not None:
         traces += additional_traces
+
+    if bandwith is not None:
+        if isinstance(bandwith, 'dict'):
+            traces += add_horizontal_bandwith(dict_bandwith=bandwith, x_values=df.index)
+        elif isinstance(bandwith, 'list'):
+            for item in bandwith:
+                traces += add_horizontal_bandwith(dict_bandwith=item, x_values=df.index)
+
     fig = plot(
         traces=traces,
         show=show,
@@ -445,3 +454,24 @@ def plot_pie_chart(keys, values, show=True, **kwargs):
         return fig
     else:
         return values
+
+
+def add_horizontal_bandwith(dict_bandwith, x_values):
+    return [
+        go.Scatter(
+            x=x_values,
+            y=[dict_bandwith['up_value']] * len(x_values),
+            fillcolor='rgba(0,100,80,0.2)',
+            line=dict(color='rgba(0,0,0,0)'),
+            fill='none',
+            showlegend=False
+        ),
+        go.Scatter(
+            x=x_values,
+            y=[dict_bandwith['down_value']] * len(x_values),
+            fillcolor='rgba(0,100,80,0.2)',
+            line=dict(color='rgba(0,0,0,0)'),
+            fill='tonexty',
+            showlegend=False
+        )
+    ]
