@@ -129,9 +129,9 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
         traces += additional_traces
 
     if bandwith is not None:
-        if isinstance(bandwith, 'dict'):
+        if isinstance(bandwith, dict):
             traces += add_horizontal_bandwith(dict_bandwith=bandwith, x_values=df.index)
-        elif isinstance(bandwith, 'list'):
+        elif isinstance(bandwith, list):
             for item in bandwith:
                 traces += add_horizontal_bandwith(dict_bandwith=item, x_values=df.index)
 
