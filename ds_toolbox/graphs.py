@@ -1,7 +1,9 @@
 import logging
 
 import pandas as pd
+from sklearn.neighbors import KernelDensity
 import plotly.graph_objects as go
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -191,6 +193,8 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     colors = kwargs.pop('colors', None)
     nbinsx = kwargs.pop('nbinsx', None)
     widget = kwargs.pop('widget', False)
+    kernel_density = kwargs.pop('kernel_density', None)
+    kernel_bandwith = kwargs.pop('kernel_bandwith', 0.75)
 
     quantiles = quantiles if quantiles is not None else []
 
@@ -199,8 +203,8 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
             x=df[key],
             name=names[ind] if names is not None else key,
             nbinsx=nbinsx,  # To specify the maximum number of bins
-            marker={"color": colors[ind] if colors is not None else None}
-
+            marker={"color": colors[ind] if colors is not None else None},
+            histnorm='probability' if kernel_density is not None else None
         )
         for ind, key in enumerate(keys)
         if not df[key].isna().all()
@@ -208,6 +212,22 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
 
     if 'y_axis_name' not in kwargs:
         kwargs['y_axis_name'] = 'Number of elements'
+
+    if kernel_density is not None:
+        for key in keys:
+            log_dens = KernelDensity(
+                kernel=kernel_density,
+                bandwidth=kernel_bandwith
+            ).fit(df[key].values[:, None]).score_samples(df[key].values[:, None])
+            density_values = np.exp(log_dens)
+            traces.append(
+                go.Scatter(
+                    x=df.sort_values(by=key)[key],
+                    y=density_values,
+                    name=key + ' ' + kernel_density + 'density',
+                    mode='lines'
+                )
+            )
 
     fig = plot(
         traces=traces,
