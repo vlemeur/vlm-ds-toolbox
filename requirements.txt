@@ -36,3 +36,4 @@ windrose
 xarray
 pmdarima
 tsfresh
+xgboost
