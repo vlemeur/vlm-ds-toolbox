@@ -1,3 +1,4 @@
+pystan
 spacy
 bandit
 cufflinks
@@ -34,5 +35,4 @@ interpret
 windrose
 xarray
 pmdarima
-pystan
-fbprophet
+tsfresh
