@@ -191,11 +191,10 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     # No need to use webgl here because points are aggregated
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
-    nbinsx = kwargs.pop('nbinsx', None)
     widget = kwargs.pop('widget', False)
     kernel_density = kwargs.pop('kernel_density', None)
     kernel_bandwith = kwargs.pop('kernel_bandwith', 0.75)
-
+    nbinsx = kwargs.pop('nbinsx', None) if kernel_density is None else kwargs.pop('nbinsx', int(len(df) / 2))
     quantiles = quantiles if quantiles is not None else []
 
     traces = [
@@ -204,14 +203,14 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
             name=names[ind] if names is not None else key,
             nbinsx=nbinsx,  # To specify the maximum number of bins
             marker={"color": colors[ind] if colors is not None else None},
-            histnorm='probability' if kernel_density is not None else None
+            histnorm="probability density" if kernel_density is not None else None
         )
         for ind, key in enumerate(keys)
         if not df[key].isna().all()
     ]
 
     if 'y_axis_name' not in kwargs:
-        kwargs['y_axis_name'] = 'Number of elements'
+        kwargs['y_axis_name'] = 'Number of elements' if kernel_density is None else None
 
     if kernel_density is not None:
         for key in keys:
@@ -219,11 +218,12 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
                 kernel=kernel_density,
                 bandwidth=kernel_bandwith
             ).fit(df[key].values[:, None]).score_samples(df[key].values[:, None])
-            density_values = np.exp(log_dens)
+            density_values =  np.exp(log_dens)
+            dkernel = pd.DataFrame(data={key: df[key].values, 'density': density_values}).sort_values(by=key)
             traces.append(
                 go.Scatter(
-                    x=df.sort_values(by=key)[key],
-                    y=density_values,
+                    x=dkernel[key],
+                    y=dkernel['density'],
                     name=key + ' ' + kernel_density + 'density',
                     mode='lines'
                 )
@@ -271,7 +271,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
         if show is True:
             fig.show()
         return df
-
+    
 
 def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%H:%M:%SZ', webgl=False, **kwargs):
     """
