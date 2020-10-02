@@ -1,7 +1,9 @@
 import logging
 
 import pandas as pd
+from sklearn.neighbors import KernelDensity
 import plotly.graph_objects as go
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +109,7 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
     widget = kwargs.pop('widget', False)
+    bandwith = kwargs.pop('bandwith', None)
 
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = 'Time'
@@ -126,6 +129,14 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     ]
     if additional_traces is not None:
         traces += additional_traces
+
+    if bandwith is not None:
+        if isinstance(bandwith, dict):
+            traces += add_horizontal_bandwith(dict_bandwith=bandwith, x_values=df.index)
+        elif isinstance(bandwith, list):
+            for item in bandwith:
+                traces += add_horizontal_bandwith(dict_bandwith=item, x_values=df.index)
+
     fig = plot(
         traces=traces,
         show=show,
@@ -180,9 +191,10 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     # No need to use webgl here because points are aggregated
     names = kwargs.pop('names', None)
     colors = kwargs.pop('colors', None)
-    nbinsx = kwargs.pop('nbinsx', None)
     widget = kwargs.pop('widget', False)
-
+    kernel_density = kwargs.pop('kernel_density', None)
+    kernel_bandwith = kwargs.pop('kernel_bandwith', 0.75)
+    nbinsx = kwargs.pop('nbinsx', None) if kernel_density is None else kwargs.pop('nbinsx', int(len(df) / 2))
     quantiles = quantiles if quantiles is not None else []
 
     traces = [
@@ -190,15 +202,32 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
             x=df[key],
             name=names[ind] if names is not None else key,
             nbinsx=nbinsx,  # To specify the maximum number of bins
-            marker={"color": colors[ind] if colors is not None else None}
-
+            marker={"color": colors[ind] if colors is not None else None},
+            histnorm="probability density" if kernel_density is not None else None
         )
         for ind, key in enumerate(keys)
         if not df[key].isna().all()
     ]
 
     if 'y_axis_name' not in kwargs:
-        kwargs['y_axis_name'] = 'Number of elements'
+        kwargs['y_axis_name'] = 'Number of elements' if kernel_density is None else None
+
+    if kernel_density is not None:
+        for key in keys:
+            log_dens = KernelDensity(
+                kernel=kernel_density,
+                bandwidth=kernel_bandwith
+            ).fit(df[key].values[:, None]).score_samples(df[key].values[:, None])
+            density_values =  np.exp(log_dens)
+            dkernel = pd.DataFrame(data={key: df[key].values, 'density': density_values}).sort_values(by=key)
+            traces.append(
+                go.Scatter(
+                    x=dkernel[key],
+                    y=dkernel['density'],
+                    name=key + ' ' + kernel_density + 'density',
+                    mode='lines'
+                )
+            )
 
     fig = plot(
         traces=traces,
@@ -242,7 +271,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
         if show is True:
             fig.show()
         return df
-
+    
 
 def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%H:%M:%SZ', webgl=False, **kwargs):
     """
@@ -445,3 +474,24 @@ def plot_pie_chart(keys, values, show=True, **kwargs):
         return fig
     else:
         return values
+
+
+def add_horizontal_bandwith(dict_bandwith, x_values):
+    return [
+        go.Scatter(
+            x=x_values,
+            y=[dict_bandwith['up_value']] * len(x_values),
+            fillcolor='rgba(0,100,80,0.2)',
+            line=dict(color='rgba(0,0,0,0)'),
+            fill='none',
+            showlegend=False
+        ),
+        go.Scatter(
+            x=x_values,
+            y=[dict_bandwith['down_value']] * len(x_values),
+            fillcolor='rgba(0,100,80,0.2)',
+            line=dict(color='rgba(0,0,0,0)'),
+            fill='tonexty',
+            showlegend=False
+        )
+    ]

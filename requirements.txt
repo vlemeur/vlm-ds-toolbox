@@ -1,4 +1,6 @@
+pystan
 spacy
+bandit
 cufflinks
 folium
 pyarrow
@@ -21,6 +23,7 @@ pymongo
 onnxmltools
 sktime
 gensim
+shap
 skorch
 hmmlearn
 sklearn-porter
@@ -28,3 +31,10 @@ sklearn-deap
 responses
 nbresuse
 tslearn
+interpret
+windrose
+xarray
+pmdarima
+tsfresh
+xgboost
+mxnet

@@ -15,6 +15,9 @@ RUN pip install --quiet --no-cache-dir \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
+# Install pystan and fbprophet(fbprojet requires pystan already installed)
+RUN python3 -m pip install pystan
+RUN python3 -m pip install fbprophet
 
 # Install local ds_toolbox code
 COPY . /app
@@ -25,7 +28,6 @@ RUN python3 -m pip install /app --no-deps
 # Install other DataScience packages
 RUN pip install --upgrade pip && \
   pip install --upgrade -r requirements.txt
-
 
 
 # Install other jupyterlab extensions
