@@ -497,7 +497,9 @@ def add_horizontal_bandwith(dict_bandwith, x_values):
     return [
         go.Scatter(
             x=x_values,
-            y=[dict_bandwith['up_value']] * len(x_values),
+            y=[dict_bandwith['up_value']] * len(x_values) if isinstance(
+                dict_bandwith['up_value'], int) or isinstance(dict_bandwith['up_value'], float) else dict_bandwith[
+                'up_value'],
             fillcolor='rgba(0,100,80,0.2)',
             line=dict(color='rgba(0,0,0,0)'),
             fill='none',
@@ -505,7 +507,9 @@ def add_horizontal_bandwith(dict_bandwith, x_values):
         ),
         go.Scatter(
             x=x_values,
-            y=[dict_bandwith['down_value']] * len(x_values),
+            y=[dict_bandwith['down_value']] * len(x_values) if isinstance(
+                dict_bandwith['down_value'], int) or isinstance(dict_bandwith['down_value'], float) else dict_bandwith[
+                'down_value'],
             fillcolor='rgba(0,100,80,0.2)',
             line=dict(color='rgba(0,0,0,0)'),
             fill='tonexty',
