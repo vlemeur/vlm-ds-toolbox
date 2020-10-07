@@ -500,7 +500,7 @@ def add_horizontal_bandwith(dict_bandwith, x_values):
             y=[dict_bandwith['up_value']] * len(x_values) if isinstance(
                 dict_bandwith['up_value'], int) or isinstance(dict_bandwith['up_value'], float) else dict_bandwith[
                 'up_value'],
-            fillcolor='rgba(0,100,80,0.2)',
+            fillcolor='rgba(0,100,80,0.5)',
             line=dict(color='rgba(0,0,0,0)'),
             fill='none',
             showlegend=False
