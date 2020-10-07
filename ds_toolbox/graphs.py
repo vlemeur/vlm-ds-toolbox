@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 
 import pandas as pd
 from sklearn.neighbors import KernelDensity
@@ -98,6 +99,8 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     - x_max float value or string date representing maximal value to show along x_axis
     - y_min float value representing minimal value to show along y_axis
     - y_max float value  representing maximal value to show along y_axis
+    - bandwith dict containing up_value and down_value of band_with
+    - target_number_points int representing number of points to plot
     - title tile of the graph
     - template string indicating plotly graph template to use. Possible choices are :
             "plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none".
@@ -110,9 +113,13 @@ def plot_evolution(keys, df, show=True, additional_traces=None, webgl=False, **k
     colors = kwargs.pop('colors', None)
     widget = kwargs.pop('widget', False)
     bandwith = kwargs.pop('bandwith', None)
+    target_number_points = kwargs.pop('target_number_points', None)
 
     if 'x_axis_name' not in kwargs:
         kwargs['x_axis_name'] = 'Time'
+
+    if target_number_points is not None:
+        df = df[::ceil(len(df) / target_number_points)]
 
     plotting_function = go.Scattergl if webgl is True else go.Scatter
 
@@ -181,6 +188,7 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     - y_min float value representing minimal value to show along y_axis
     - y_max float value  representing maximal value to show along y_axis
     - title tile of the graph
+    - target_number_points int representing number of points to plot
     - nbinsx int representing the number of histograms bars to use
     - template string indicating plotly graph template to use. Possible choices are :
             "plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none".
@@ -194,8 +202,12 @@ def plot_hist(keys, df, quantiles=None, show=True, **kwargs):
     widget = kwargs.pop('widget', False)
     kernel_density = kwargs.pop('kernel_density', None)
     kernel_bandwith = kwargs.pop('kernel_bandwith', 0.75)
+    target_number_points = kwargs.pop('target_number_points', None)
     nbinsx = kwargs.pop('nbinsx', None) if kernel_density is None else kwargs.pop('nbinsx', int(len(df) / 2))
     quantiles = quantiles if quantiles is not None else []
+
+    if target_number_points is not None:
+        df = df[::ceil(len(df) / target_number_points)]
 
     traces = [
         go.Histogram(
@@ -313,6 +325,7 @@ def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%
     - x_max float value or string date representing maximal value to show along x_axis
     - y_min float value representing minimal value to show along y_axis
     - y_max float value  representing maximal value to show along y_axis
+    - target_number_points int representing number of points to plot
     - title tile of the graph
     - template string indicating plotly graph template to use. Possible choices are :
             "plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none".
@@ -327,6 +340,10 @@ def plot_xy(df, x_name, y_names, z_name=None, show=True, date_format='%Y-%m-%dT%
     modes = kwargs.pop('modes', None)
     names = kwargs.pop('names', None)
     widget = kwargs.pop('widget', False)
+    target_number_points = kwargs.pop('target_number_points', None)
+
+    if target_number_points is not None:
+        df = df[::ceil(len(df) / target_number_points)]
 
     marker = dict(color=df[z_name],
                   colorscale='Jet',
