@@ -38,8 +38,10 @@ RUN jupyter labextension install \
     @jupyterlab/toc \
     @jupyterlab/geojson-extension \
     @lckr/jupyterlab_variableinspector \
+    @aquirdturtle/collapsible_headings \
+    jupyterlab-execute-time \
     @jupyter-voila/jupyterlab-preview \
-    jupyterlab-spreadsheet \
+    spreadsheet-editor \
     jupyterlab-plotly \
     plotlywidget \
     jupyterlab-drawio \
