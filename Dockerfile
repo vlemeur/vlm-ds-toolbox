@@ -6,6 +6,7 @@ RUN apt -qq update \
  && apt install -yq --no-install-recommends \
     pandoc \
     texlive-xetex \
+    curl \
     texlive-fonts-recommended \
  && apt clean && rm -rf /var/lib/apt/lists/*
 
@@ -28,6 +29,17 @@ RUN python3 -m pip install /app --no-deps
 # Install other DataScience packages
 RUN pip install --upgrade pip && \
   pip install --upgrade -r requirements.txt
+
+# Install Julia kernel
+RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.2-linux-x86_64.tar.gz
+RUN tar -xvzf julia-1.5.2-linux-x86_64.tar.gz
+RUN cp -r julia-1.5.2 /opt/
+RUN ln -s /opt/julia-1.5.2/bin/julia /usr/local/bin/julia
+RUN mkdir /.julia
+COPY packages.jl /opt/packages.jl
+RUN julia /opt/packages.jl
+RUN julia -e "using Pkg; Pkg.add(\"IJulia\"); Pkg.build(\"IJulia\");"
+
 
 
 # Install other jupyterlab extensions

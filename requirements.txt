@@ -9,6 +9,7 @@ plotly
 plotly-geo
 kaleido
 geopandas
+pyspc
 keras
 itk
 jupyterlab_geojson
@@ -38,3 +39,4 @@ pmdarima
 tsfresh
 xgboost
 mxnet
+openpyxl
