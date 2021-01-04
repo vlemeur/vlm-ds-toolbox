@@ -21,7 +21,9 @@ RUN python3 -m pip install pystan
 RUN python3 -m pip install fbprophet
 
 # Install local Metroscope DataScience Packages
-RUN python3 -m pip install --index-url https://vlemeur:ZLi40cWWuoblK5PiX3jF@metroscope.jfrog.io/metroscope/api/pypi/python-repo/simple --extra-index-url https://pypi.python.org/simple mts-setup-tools>=1.3.21 metdiagnosis metsimulation
+ARG JFROG_USER=''
+ARG  JFROG_PASSWORD=''
+RUN python3 -m pip install --index-url https://"${JFROG_USER}":"${JFROG_PASSWORD}"@metroscope.jfrog.io/metroscope/api/pypi/python-repo/simple --extra-index-url https://pypi.python.org/simple -r metroscope-requirements.txt
 
 # Install local ds_toolbox code
 COPY . /app
